@@ -1,7 +1,6 @@
 const discord = require('discord.js');
 const { updateMonitoredChannels } = require('../utils/monitoredChannels.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-
 let monitoredChannels = require('../utils/monitoredChannels.json');
 
 /**
@@ -32,5 +31,6 @@ const toggleCommand = new SlashCommandBuilder()
 
 module.exports = {
   data: toggleCommand,
-  execute: toggleMonitor
+  execute: toggleMonitor,
+  monitoredChannels: monitoredChannels
 }

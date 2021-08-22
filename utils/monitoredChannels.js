@@ -1,10 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const monitoredChannelsPath = path.join(__dirname, 'monitoredChannels.json');
-let monitoredChannels = [];
+let monitoredChannels = JSON.parse(fs.readFileSync(monitoredChannelsPath, { encoding: 'utf-8' }));
 
 const getMonitoredChannels = () => {
-  monitoredChannels = JSON.parse(fs.readFileSync(monitoredChannelsPath, { encoding: 'utf-8' }));
   return monitoredChannels;
 }
 

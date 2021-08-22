@@ -12,7 +12,8 @@ const replies = require('./eventhandlers/replyToBlockPost.js');
 const { getLatestTweet, postTweet } = require('./utils/basilQuotes.js');
 client.commands = new Collection();
 const jsonCommands = [];
-const devServerId = '769873397739421716';
+const serverIds = ['769873397739421716', '855610710583148604'] 
+const accountIds = ['1394717331255820289', '1325549510135861248'];
 const applicationId = '877432418284486656';
 
 for(const file of commandFiles) {
@@ -21,22 +22,21 @@ for(const file of commandFiles) {
   client.commands.set(commandModule.data.name, commandModule);
 }
 
-
 const rest = new REST({ version: 9 }).setToken(process.env.token);
 
 (async () => {
-  try {
-    console.log(`Re-initializing slash commands...`);
-
-    await rest.put(
-      Routes.applicationGuildCommands(applicationId, devServerId),
-      { body: jsonCommands }
-    );
-
-    console.log('Initialized slash commands.');
-  }
-  catch(error) {
-    console.error(error);
+  for(let serverId of serverIds) {
+    try {
+      console.log(`Re-initializing slash commands in ${serverId}...`);
+      await rest.put(
+        Routes.applicationGuildCommands(applicationId, serverId),
+        { body: jsonCommands }
+      )
+      console.log('Initialized slash commands.');
+    }
+    catch(error) {
+      console.error(error);
+    }  
   }
 })();
 
@@ -56,12 +56,14 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 client.on('messageCreate', (message) => {
+  if(message.member.user.bot) return;
   replies.parseMessage(message);
   return;
 })
 
 client.once('ready', async () => {
   console.log('List of servers:\n'.red.bold);
+  if(process.env.NODE_ENV="production") console.log("RUNNING IN PRODUCTION MODE".green.bold);
   const guilds = Array.from(client.guilds.cache.values());
   client.guilds.cache.forEach((guild, key) => console.log(`-- ${guild.name}\n`));
   client.cachedBlocklist = await updateBlocklist();
@@ -75,8 +77,7 @@ setInterval(async () => {
 }, 60000);
 
 setInterval(async () => {
-  let latestId = await getLatestTweet();
-  if(latestId) {
-    await postTweet(client);
+  for(let accountId of accountIds) {
+    await getLatestTweet(client, accountId);
   }
-}, 5000)
+}, 10000)

@@ -1,5 +1,6 @@
 const discord = require('discord.js');
-const monitoredChannels = require('../utils/monitoredChannels.json');
+const { getMonitoredChannels } = require('../utils/monitoredChannels.js');
+let monitoredChannels = require('../utils/monitoredChannels.json');
 
 /**
  * 
@@ -21,6 +22,8 @@ const replyToBlockPost = async (message, blockedUser) => {
  * @param {discord.Message} message 
  */
 const parseMessage = (message) => {
+  monitoredChannels = getMonitoredChannels();
+  console.log(monitoredChannels);
   if(!monitoredChannels.includes(message.channel.id)) return;
   
   const regex = new RegExp(String.raw`.*https://twitter.com/(?<username>\w+)/.*`)
