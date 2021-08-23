@@ -40,6 +40,7 @@ const updateBlocklist = async () => {
   }
 
   const $ = cheerio.load(rawHtml);
+  blocklist = []
   const table = $("table tbody", ".table-inner")
     .children()
     .each(async (i, tr) => {
