@@ -40,7 +40,7 @@ const updateBlocklist = async () => {
   }
 
   const $ = cheerio.load(rawHtml);
-  blocklist = [];
+  let currentBlocklist = [];
   const table = $("table tbody", ".table-inner")
     .children()
     .each(async (i, tr) => {
@@ -48,11 +48,11 @@ const updateBlocklist = async () => {
       const reason = $(tr).children().eq(1).text();
       names.forEach((name) => {
         name = name.replace('@', '');
-        if(blocklist.some(element => element.name === name)) return;
-        blocklist.push({ name: name, reason: reason });
-      })
+        currentBlocklist.push({ name: name, reason: reason });
+      });
     });
 
+    blocklist = blocklist.filter(user => currentBlocklist.some(curr => user.name === curr.name));
     for(let blockedUser of blocklist) {
       if(blockedUser.id && blockedUser.id != "N/A") continue;
       else {
