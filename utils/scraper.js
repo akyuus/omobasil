@@ -52,7 +52,15 @@ const updateBlocklist = async () => {
       });
     });
 
+    // remove users that aren't on the blocklist anymore
     blocklist = blocklist.filter(user => currentBlocklist.some(curr => user.name === curr.name));
+    // add new users
+    currentBlocklist.forEach(user => {
+      if(!blocklist.some(oldUser => oldUser.name === user.name)) {
+        blocklist.push(user);
+      }
+    });
+    
     for(let blockedUser of blocklist) {
       if(blockedUser.id && blockedUser.id != "N/A") continue;
       else {
