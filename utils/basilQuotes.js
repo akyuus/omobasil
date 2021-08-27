@@ -33,6 +33,7 @@ const getLatestTweet = async (client, twitterId) => {
     return null;
   }
 
+  console.log(response);
   try {
     const latestId = response.data.data[0].id;
     const mediaType = response.data.includes.media[0].type;
