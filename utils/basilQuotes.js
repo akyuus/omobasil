@@ -24,7 +24,7 @@ const getLatestTweet = async (client, twitterId) => {
         "exclude": "retweets,replies",
         "expansions": "attachments.media_keys",
         "media.fields": "type",
-        "max_results": 5
+        "max_results": 40
       }
     });
   }
@@ -35,7 +35,7 @@ const getLatestTweet = async (client, twitterId) => {
 
   console.log(response);
   try {
-    const latestId = response.data.data[0].id;
+    const latestId = response.data.meta.newest_id;
     const mediaType = response.data.includes.media[0].type;
     const isVideo = (mediaType === "video" || mediaType === "animated_gif");  
     let currentId = currentIds[twitterId];
