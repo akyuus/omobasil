@@ -61,9 +61,23 @@ const getLatestTweet = async (client, twitterId) => {
  * @param {discord.Client} client 
  */
 const postTweet = async (client, twitterId, tweetId, isVideo=false) => {
-  let tweetLink = `https://twitter.com/${twitterId}/status/${tweetId}`;
+  let response = null;
+  try {
+    response = await axios.get(`https://api.twitter.com/2/users/${twitterId}`, {
+      headers: {
+        'Authorization': `Bearer ${process.env.TWITTER_BEARER_TOKEN}`
+      },
+    });
+  }
+  catch(error) {
+    console.error(error);
+    return;
+  }
+
+  const username = response.data.data.username;
+  let tweetLink = `https://twitter.com/${username}/status/${tweetId}`;
   if(isVideo) {
-    tweetLink = `https://fxtwitter.com/${twitterId}/status/${tweetId}`;
+    tweetLink = `https://fxtwitter.com/${username}/status/${tweetId}`;
   }
   for(let updateChannel of updateChannels) {
     try {
