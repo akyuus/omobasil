@@ -33,19 +33,26 @@ const getLatestTweet = async (client, twitterId) => {
     return null;
   }
 
-  const latestId = response.data.data[0].id;
-  const mediaType = response.data.includes.media[0].type;
-  const isVideo = (mediaType === "video" || mediaType === "animated_gif");  
-  let currentId = currentIds[twitterId];
-  if(latestId === currentId) {
-    console.log('No new tweets.');
-    return null;
+  try {
+    const latestId = response.data.data[0].id;
+    const mediaType = response.data.includes.media[0].type;
+    const isVideo = (mediaType === "video" || mediaType === "animated_gif");  
+    let currentId = currentIds[twitterId];
+    if(latestId === currentId) {
+      console.log('No new tweets.');
+      return null;
+    }
+    else {
+      console.log(`There's a new tweet!`);
+      currentIds[twitterId] = latestId;
+      fs.writeFileSync(path.join(__dirname, 'latestId.json'), JSON.stringify(currentIds));
+      postTweet(client, twitterId, latestId, isVideo);
+    }
   }
-  else {
-    console.log(`There's a new tweet!`);
-    currentIds[twitterId] = latestId;
-    fs.writeFileSync(path.join(__dirname, 'latestId.json'), JSON.stringify(currentIds));
-    postTweet(client, twitterId, latestId, isVideo);
+  catch(error) {
+    console.error(error);
+    console.log(response);
+    return;
   }
 }
 
