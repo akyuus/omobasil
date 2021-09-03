@@ -80,4 +80,4 @@ setInterval(async () => {
   for(let accountId of accountIds) {
     await getLatestTweet(client, accountId);
   }
-}, 10000)
+}, 180000)
