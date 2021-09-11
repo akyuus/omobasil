@@ -4,6 +4,7 @@ const axios = require('axios').default;
 const baseUrl = `https://api.twitter.com/2/users`;
 const fs = require('fs');
 const path = require('path');
+const colors = require('colors');
 let currentIds = require('./latestId.json');
 
 /**
@@ -33,18 +34,24 @@ const getLatestTweet = async (client, twitterId) => {
     return null;
   }
 
-  console.log(response);
   try {
     let latestIds = [response.data.data[0].id, response.data.data[1].id, response.data.data[2].id];
-    let mediaTypes = [response.data.includes.media[0].type, response.data.includes.media[1].type, response.data.includes.media[2].type];
-    for(let i = 0; i < latestIds.length; i++) {
+    /**
+     * @type Object.<string, string>[]
+     */
+    let mediaTypes = response.data.includes.media;
+    for(let i = 2; i > -1; i--) {
       let latestId = latestIds[i];
-      let mediaType = mediaTypes[i];
+      let attachments = response.data.data[i].attachments;
+      let media_key = attachments ? attachments.media_keys[0] : null;
+      let mediaType = media_key ? mediaTypes.find(mobj => mobj.media_key === media_key).type : "none";
       const isVideo = (mediaType === "video" || mediaType === "animated_gif");  
       let currentId = currentIds[twitterId];
-      if(latestId === currentId) {
-        console.log('No new tweets.');
-        return null;
+      console.log(`Current ID on file: ${currentId}`.bold.red);
+      console.log(`Latest ID retrieved: ${latestId}`.bold.red);
+      if(parseInt(latestId) <= parseInt(currentId)) {
+        console.log(`Tweet #${latestId} is not new.`);
+        continue;
       }
       else {
         console.log(`There's a new tweet!`);
