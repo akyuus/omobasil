@@ -25,7 +25,7 @@ const getLatestTweet = async (client, twitterId) => {
         "exclude": "retweets,replies",
         "expansions": "attachments.media_keys",
         "media.fields": "type",
-        "max_results": 40
+        "max_results": 20
       }
     });
   }
