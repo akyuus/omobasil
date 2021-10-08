@@ -25,7 +25,7 @@ const getLatestTweet = async (client, twitterId) => {
         "exclude": "retweets,replies",
         "expansions": "attachments.media_keys",
         "media.fields": "type",
-        "max_results": 20
+        "max_results": 10
       }
     });
   }
@@ -35,12 +35,12 @@ const getLatestTweet = async (client, twitterId) => {
   }
 
   try {
-    let latestIds = [response.data.data[0].id, response.data.data[1].id, response.data.data[2].id];
+    let latestIds = response.data.data.map(el => el.id);
     /**
      * @type Object.<string, string>[]
      */
     let mediaTypes = response.data.includes.media;
-    for(let i = 2; i > -1; i--) {
+    for(let i = latestIds.length - 1; i > -1; i--) {
       let latestId = latestIds[i];
       let attachments = response.data.data[i].attachments;
       let media_key = attachments ? attachments.media_keys[0] : null;
