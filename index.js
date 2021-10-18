@@ -13,7 +13,7 @@ const { getLatestTweet, postTweet } = require('./utils/basilQuotes.js');
 client.commands = new Collection();
 const jsonCommands = [];
 const serverIds = ['769873397739421716', '855610710583148604'] 
-const accountIds = ['1394717331255820289', '1325549510135861248'];
+const accountIds = ['1394717331255820289', '1325549510135861248', '1398910891932884993'];
 const applicationId = '877432418284486656';
 
 for(const file of commandFiles) {

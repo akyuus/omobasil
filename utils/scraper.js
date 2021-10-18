@@ -69,8 +69,6 @@ const updateBlocklist = async () => {
     }
 
     fs.writeFileSync(blocklistPath, JSON.stringify(blocklist));
-    console.log("--CURRENT BLOCKLIST--".blue.underline);
-    console.log(blocklist);
     return blocklist;
 }
 
