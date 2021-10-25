@@ -10,6 +10,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const replies = require('./eventhandlers/replyToBlockPost.js');
 const { getLatestTweet, postTweet } = require('./utils/basilQuotes.js');
+const { log } = require('console');
 client.commands = new Collection();
 const jsonCommands = [];
 const serverIds = ['769873397739421716', '855610710583148604'] 
@@ -56,7 +57,8 @@ client.on('interactionCreate', async (interaction) => {
 })
 
 client.on('messageCreate', (message) => {
-  if(message.member.user.bot) return;
+  console.log(message);
+  if(!message.member || message.member.user.bot) return;
   replies.parseMessage(message);
   return;
 })
